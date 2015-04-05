@@ -2,3 +2,13 @@
 remote_deploy_user: deploy
 remote_deploy_group: deploy
 remote_deploy_home: /home/deploy
+
+# role: wordpress-install
+remote_www_dir: "{{ remote_deploy_home}}/projects"
+remote_wordpress_dir: "{{ remote_www_dir }}/wordpress"
+mysql_user: deploy
+mysql_user_pass: deploypass
+
+# role: mariadb
+# You can put the password into roles/mariadb/vars/main.yml and add the file to .gitignore for security reasons
+mysql_root_password: mariadbpass

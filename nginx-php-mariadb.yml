@@ -10,3 +10,4 @@
     - common
     - php
     - wp-cli
+    - mariadb

@@ -1,2 +1,5 @@
 .idea
 .DS_Store
+
+# Secret passwords and sensitive data
+roles/*/vars/
