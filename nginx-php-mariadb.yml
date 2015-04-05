@@ -12,3 +12,4 @@
     - wp-cli
     - mariadb
     - wordpress-install
+    - php-fpm

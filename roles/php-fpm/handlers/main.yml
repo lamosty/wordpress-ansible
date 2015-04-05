@@ -1,0 +1,4 @@
+---
+
+- name: reload php-fpm
+  service: name=php5-fpm state=reloaded

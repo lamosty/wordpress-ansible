@@ -1,0 +1,17 @@
+; {{ ansible_managed }}
+
+[wordpress]
+listen = /var/run/php5-fpm-wordpress.sock
+listen.owner = {{ remote_deploy_user }}
+listen.group = {{ remote_deploy_group }}
+user = www-data
+group = www-data
+pm = dynamic
+pm.max_children = 10
+pm.start_servers = 1
+pm.min_spare_servers = 1
+pm.max_spare_servers = 3
+pm.max_requests = 500
+chdir = {{ remote_www_dir }}/
+php_admin_value[open_basedir] = {{ remote_www_dir }}/:/tmp
+
