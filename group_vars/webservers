@@ -1,3 +1,4 @@
+# role: common
 remote_deploy_user: deploy
 remote_deploy_group: deploy
 remote_deploy_home: /home/deploy

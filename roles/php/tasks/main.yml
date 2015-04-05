@@ -1,0 +1,10 @@
+---
+
+- name: Add PHP v5.6 apt repository
+  apt_repository:
+    repo: 'ppa:ondrej/php5-5.6'
+
+- name: Install PHP v5.6 for WP-CLI support
+  apt: name={{ item }}
+  with_items:
+  - php5
