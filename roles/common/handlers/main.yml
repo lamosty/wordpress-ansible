@@ -1,0 +1,4 @@
+---
+
+- name: reconfigure dpkg
+  command: /usr/sbin/dpkg-reconfigure locales

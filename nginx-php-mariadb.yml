@@ -1,0 +1,10 @@
+---
+- name: >
+    WordPress on Nginx (no caching), PHP-FPM, MariaDB
+    Includes WP-CLI
+
+  hosts: webservers
+  remote_user: root
+
+  roles:
+    - common
