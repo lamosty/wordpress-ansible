@@ -8,3 +8,9 @@
   apt: name={{ item }}
   with_items:
   - php5
+  - php5-common
+  - php5-mysqlnd
+  - php5-mcrypt
+  - php5-curl
+  - php5-cli
+  - php-pear
