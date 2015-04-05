@@ -1,0 +1,13 @@
+---
+
+- name: Download WP-CLI
+  shell: curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+
+- name: Make WP-CLI executable
+  file:
+    path: /root/wp-cli.phar
+    mode: u=rwx,g=rx,o=rx
+
+- name: Move WP-CLI to /usr/local/bin/wp
+  command: mv /root/wp-cli.phar /usr/local/bin/wp
+
