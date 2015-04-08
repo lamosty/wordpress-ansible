@@ -1,0 +1,22 @@
+---
+- name: Add HHVM apt-key
+  apt_key: url="http://dl.hhvm.com/conf/hhvm.gpg.key" state=present
+
+- name: Add HHVM deb
+  apt_repository: repo="deb http://dl.hhvm.com/ubuntu {{ ansible_distribution_release }} main"
+                  state=present
+
+- name: Install HHVM
+  apt: pkg=hhvm state=latest force=yes update_cache=yes
+
+- name: HHVM server.ini
+  template: src=server.ini.j2 dest=/etc/hhvm/server.ini
+
+- name: HHVM php.ini
+  template: src=php.ini.j2 dest=/etc/hhvm/php.ini
+
+- name: Symlink mysql.sock for HHVM
+  file: src=/var/run/mysqld/mysqld.sock dest=/tmp/mysql.sock owner=mysql group=mysql state=link force=yes
+
+- name: Disable HHVM from starting on boot
+  service: name=hhvm state=stopped enabled=no

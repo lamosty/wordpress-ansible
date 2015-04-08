@@ -1,7 +1,6 @@
 ---
 - name: >
-    WordPress on Nginx (no FastCGI caching), PHP-FPM, MariaDB
-    Includes WP-CLI
+    Installs PHP, WP-CLI, MariaDB, WordPress, PHP-FPM, Nginx, Apache2, HHVM
 
   hosts: webservers
   remote_user: root
@@ -14,4 +13,6 @@
     - wordpress-install
     - php-fpm
     - nginx
+    - apache2
+    - hhvm
 
