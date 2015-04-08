@@ -1,6 +1,6 @@
 ---
 - name: >
-    WordPress on Nginx (no caching), PHP-FPM, MariaDB
+    WordPress on Nginx (no FastCGI caching), PHP-FPM, MariaDB
     Includes WP-CLI
 
   hosts: webservers
@@ -13,3 +13,4 @@
     - mariadb
     - wordpress-install
     - php-fpm
+    - nginx

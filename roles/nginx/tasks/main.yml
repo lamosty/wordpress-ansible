@@ -1,0 +1,12 @@
+---
+- name: Add Nginx PPA
+  apt_repository: repo="ppa:rtcamp/nginx" update_cache=yes
+
+- name: Install Nginx
+  apt: name=nginx state=present force=yes
+
+- name: Disable Nginx from starting on boot
+  service: name=nginx enabled=no state=stopped
+
+- name: Disable default server
+  file: path=/etc/nginx/sites-enabled/default state=absent
