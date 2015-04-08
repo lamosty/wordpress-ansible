@@ -6,14 +6,15 @@
   remote_user: root
 
   roles:
-    - common
-    - php
-    - wp-cli
-    - mariadb
-    - wordpress-install
-    - php-fpm
-    - nginx
-    - apache2
-    - hhvm
-    - redis
+#    - common
+#    - php
+#    - wp-cli
+#    - mariadb
+#    - wordpress-install
+#    - php-fpm
+#    - nginx
+#    - apache2
+#    - hhvm
+#    - redis
+    - monit
 

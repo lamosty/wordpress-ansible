@@ -1,0 +1,7 @@
+---
+
+- name: Install Monit monitoring daemon
+  apt: name=monit
+
+- name: Disable monit from starting on boot
+  service: name=monit enabled=no state=stopped
