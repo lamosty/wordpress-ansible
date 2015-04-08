@@ -1,0 +1,10 @@
+---
+
+- name: Install Redis server and PHP-Redis library
+  apt: name={{ item }}
+  with_items:
+  - redis-server
+  - php5-redis
+
+- name: Disable Redis server from starting on boot
+  service: name=redis-server state=stopped enabled=no

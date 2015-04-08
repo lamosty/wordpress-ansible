@@ -15,4 +15,5 @@
     - nginx
     - apache2
     - hhvm
+    - redis
 
