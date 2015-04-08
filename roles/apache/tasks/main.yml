@@ -1,0 +1,12 @@
+---
+- name: Add Apache PPA
+  apt_repository: repo="ppa:ondrej/apache2" update_cache=yes
+
+- name: Install Apache
+  apt: name=apache2 state=present
+
+- name: Disable Apache from starting on boot
+  service: name=apache2 enabled=no state=stopped
+
+- name: Disable default server
+  file: path=/etc/apache2/sites-enabled/000-default.conf state=absent
