@@ -4,7 +4,7 @@
   hosts: webservers
   remote_user: root
   vars:
-    wp_basic: True
+    wp_php_fpm: True
     fpm_start: True
 
   roles:

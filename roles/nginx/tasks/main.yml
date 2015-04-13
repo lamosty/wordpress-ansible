@@ -14,15 +14,15 @@
 - name: Disable default site
   file: path=/etc/nginx/sites-enabled/default state=absent
 
-- name: Create basic WordPress site configuration
-  template: src=wp-basic.conf.j2
-            dest=/etc/nginx/sites-available/wp-basic.conf
+- name: Create PHP-FPM WordPress site configuration
+  template: src=wp-php-fpm.conf.j2
+            dest=/etc/nginx/sites-available/wp-php-fpm.conf
 
-- name: Enable basic WordPress site configuration
-  file: src="/etc/nginx/sites-available/wp-basic.conf"
-        dest="/etc/nginx/sites-enabled/wp-basic.conf"
+- name: Enable PHP-FPM WordPress site configuration
+  file: src="/etc/nginx/sites-available/wp-php-fpm.conf"
+        dest="/etc/nginx/sites-enabled/wp-php-fpm.conf"
         owner=root
         group=root
         state=link
   notify: start nginx
-  when: wp_basic
+  when: wp_php_fpm
