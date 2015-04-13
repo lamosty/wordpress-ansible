@@ -3,3 +3,6 @@
 
 # Secret passwords and sensitive data
 roles/*/vars/
+
+# Used to verify my hosts at loader.io for load testing
+loader.io-verification.yml
