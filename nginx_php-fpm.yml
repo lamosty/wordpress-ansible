@@ -5,13 +5,12 @@
 
   hosts: webservers
   remote_user: root
+  vars:
+    wp_basic: True
+    fpm_start: True
 
   roles:
-    - common
-    - php
-    - wp-cli
-    - mariadb
-    - wordpress-install
+    - reset-all-configs
     - php-fpm
     - nginx
 

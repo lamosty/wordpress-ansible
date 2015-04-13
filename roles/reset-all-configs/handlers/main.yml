@@ -1,0 +1,16 @@
+---
+
+- name: stop nginx
+  service: name=nginx state=stopped
+
+- name: stop apache2
+  service: name=apache2 state=stopped
+
+- name: stop php-fpm
+  service: name=php-fpm state=stopped
+
+- name: stop hhvm
+  service: name=hhvm state=stopped
+
+- name: stop redis-server
+  service: name=redis-server state=stopped

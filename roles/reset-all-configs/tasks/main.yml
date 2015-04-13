@@ -1,0 +1,10 @@
+---
+
+- name: Reset Nginx enabled sites
+  shell: rm -rf /etc/nginx/sites-enabled/*
+
+- name: Reset Apache2 enabled sites
+  shell: rm -rf /etc/apache2/sites-enabled/*
+
+- name: Stop services
+  include: stop-services.yml

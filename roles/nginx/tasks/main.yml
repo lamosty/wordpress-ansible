@@ -5,8 +5,24 @@
 - name: Install Nginx
   apt: name=nginx state=present force=yes
 
+- name: Create nginx.conf
+  template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf
+
 - name: Disable Nginx from starting on boot
   service: name=nginx enabled=no state=stopped
 
-- name: Disable default server
+- name: Disable default site
   file: path=/etc/nginx/sites-enabled/default state=absent
+
+- name: Create basic WordPress site configuration
+  template: src=wp-basic.conf.j2
+            dest=/etc/nginx/sites-available/wp-basic.conf
+
+- name: Enable basic WordPress site configuration
+  file: src="/etc/nginx/sites-available/wp-basic.conf"
+        dest="/etc/nginx/sites-enabled/wp-basic.conf"
+        owner=root
+        group=root
+        state=link
+  notify: start nginx
+  when: wp_basic

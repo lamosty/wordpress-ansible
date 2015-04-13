@@ -20,8 +20,11 @@
   command: apt-get -y autoremove
   when: "check_autoremove.rc != 0"
 
-- name: Install htop
-  apt: name="htop" state=present
+- name: Install useful software
+  apt: name="{{ item }}" state=present
+  with_items:
+  - htop
+  - screen
 
 - name: Install system packages
   apt: name="{{ item }}" state=present

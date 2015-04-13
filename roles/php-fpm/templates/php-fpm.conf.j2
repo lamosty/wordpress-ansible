@@ -2,8 +2,8 @@
 
 [wordpress]
 listen = /var/run/php5-fpm-wordpress.sock
-listen.owner = {{ remote_deploy_user }}
-listen.group = {{ remote_deploy_group }}
+listen.owner = www-data
+listen.group = www-data
 user = www-data
 group = www-data
 pm = dynamic
