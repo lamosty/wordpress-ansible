@@ -5,8 +5,30 @@
 - name: Install Apache
   apt: name=apache2 state=present
 
+- name: Install mod_php and libraries
+  apt: name="{{ item }}" state=present
+  with_items:
+  - libapache2-mod-php5
+  - libapache2-mod-auth-mysql
+
+- name: Create apache2.conf
+  template: src=apache2.conf.j2 dest=/etc/apache2/apache2.conf
+
 - name: Disable Apache from starting on boot
   service: name=apache2 enabled=no state=stopped
 
 - name: Disable default site
   file: path=/etc/apache2/sites-enabled/000-default.conf state=absent
+
+- name: Create mod_php WordPress site configuration
+  template: src=wp-mod_php.conf.j2
+            dest=/etc/apache2/sites-available/wp-mod_php.conf
+
+- name: Enable mod_php WordPress site configuration
+  file: src="/etc/apache2/sites-available/wp-mod_php.conf"
+        dest="/etc/apache2/sites-enabled/wp-mod_php.conf"
+        owner=root
+        group=root
+        state=link
+  notify: start apache2
+  when: wp_mod_php

@@ -1,0 +1,12 @@
+---
+- name: WordPress on Apache2 (no FastCGI caching), mod_php, MariaDB
+
+  hosts: webservers
+  remote_user: root
+  vars:
+    wp_mod_php: True
+
+  roles:
+    - reset-all-configs
+    - apache
+

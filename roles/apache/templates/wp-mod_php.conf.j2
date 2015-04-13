@@ -1,0 +1,15 @@
+# {{ ansible_managed }}
+
+<VirtualHost *:80>
+    DirectoryIndex index.php
+    DocumentRoot "{{ remote_wordpress_dir }}"
+
+    <Directory "{{ remote_wordpress_dir }}">
+        Options Indexes FollowSymLinks
+
+        # No .htaccess
+        AllowOverride None
+
+        Require all granted
+ </Directory>
+</VirtualHost>

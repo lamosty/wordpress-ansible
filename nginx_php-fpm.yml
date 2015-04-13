@@ -1,7 +1,5 @@
 ---
-- name: >
-    WordPress on Nginx (no FastCGI caching), PHP-FPM, MariaDB
-    Includes WP-CLI
+- name: WordPress on Nginx (no FastCGI caching), PHP-FPM, MariaDB
 
   hosts: webservers
   remote_user: root
