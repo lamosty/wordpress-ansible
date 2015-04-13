@@ -25,4 +25,17 @@
         group=root
         state=link
   notify: start nginx
-  when: wp_php_fpm
+  when: wp_php_fpm is defined
+
+- name: Create HHVM WordPress site configuration
+  template: src=wp-hhvm.conf.j2
+            dest=/etc/nginx/sites-available/wp-hhvm.conf
+
+- name: Enable HHVM WordPress site configuration
+  file: src="/etc/nginx/sites-available/wp-hhvm.conf"
+        dest="/etc/nginx/sites-enabled/wp-hhvm.conf"
+        owner=root
+        group=root
+        state=link
+  notify: start nginx
+  when: wp_hhvm is defined

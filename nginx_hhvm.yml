@@ -4,11 +4,11 @@
   hosts: webservers
   remote_user: root
   vars:
-    wp_php_fpm: true
-    fpm_start: true
+    wp_hhvm: true
+    hhvm_start: true
 
   roles:
     - reset-all-configs
-    - php-fpm
+    - hhvm
     - nginx
 

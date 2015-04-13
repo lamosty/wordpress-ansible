@@ -22,4 +22,4 @@
 
 - name: Start PHP-FPM
   service: name=php5-fpm state=started
-  when: fpm_start
+  when: fpm_start is defined

@@ -7,7 +7,7 @@
                   state=present
 
 - name: Install HHVM
-  apt: pkg=hhvm state=latest force=yes update_cache=yes
+  apt: pkg=hhvm state=latest force=yes
 
 - name: HHVM server.ini
   template: src=server.ini.j2 dest=/etc/hhvm/server.ini
@@ -20,3 +20,8 @@
 
 - name: Disable HHVM from starting on boot
   service: name=hhvm state=stopped enabled=no
+
+
+- name: Start HHVM
+  service: name=hhvm state=started
+  when: hhvm_start is defined

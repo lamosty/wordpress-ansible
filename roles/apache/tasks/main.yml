@@ -31,4 +31,4 @@
         group=root
         state=link
   notify: start apache2
-  when: wp_mod_php
+  when: wp_mod_php is defined
