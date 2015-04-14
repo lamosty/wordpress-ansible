@@ -6,8 +6,10 @@
   vars:
     wp_advanced: true
     wp_dummy_data: true
+    wp_redis: true
 
   roles:
-    - reset-wordpress
-    - wordpress-install
+#    - reset-wordpress
+#    - wordpress-install
+    - web-caching
 

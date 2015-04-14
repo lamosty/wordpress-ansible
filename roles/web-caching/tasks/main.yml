@@ -1,0 +1,18 @@
+---
+
+- name: Start Redis
+  service: name=redis-server state=started
+  when: wp_redis is defined
+
+- name: Install WP Redis WordPress plugin
+  command: "wp plugin install wp-redis"
+  args:
+    chdir: "{{ remote_wordpress_dir }}"
+  when: wp_redis is defined
+
+- name: Symlink WP Redis object-cache.php to wp-content/
+  file:
+    src: "{{ remote_wordpress_dir }}/wp-content/plugins/wp-redis/object-cache.php"
+    path: "{{ remote_wordpress_dir }}/wp-content/object-cache.php"
+    state: link
+  when: wp_redis is defined
