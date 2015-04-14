@@ -15,7 +15,7 @@
 
 - name: Is WordPress downloaded?
   stat: path="{{ remote_wordpress_dir }}/index.php"
-  register: wordpress_is_downloaded
+  register: wp_dir
 
 - name: Create WordPress directory
   file: path="{{ remote_wordpress_dir }}"
@@ -23,14 +23,14 @@
         group="{{ remote_deploy_group }}"
         mode=0755
         state=directory
-  when: wordpress_is_downloaded == False
+  when: wp_dir.stat.isdir is not defined
 
 - name: Download WordPress
   command: wp core download
   args:
       chdir: "{{ remote_wordpress_dir }}/"
   remote_user: "{{ remote_deploy_user }}"
-  when: wordpress_is_downloaded == False
+  when: wp_dir.stat.isdir is not defined
 
 - name: Configure WordPress
   command: wp core config
@@ -40,7 +40,7 @@
            --dbpass="{{ wordpress_db_user_pass }}"
            --dbprefix="{{ wordpress_db_prefix }}"
   remote_user: "{{ remote_deploy_user }}"
-  when: wordpress_is_downloaded == False
+  when: wp_dir.stat.isdir is not defined
 
 - name: Is WordPress installed?
   command: wp core is-installed
@@ -61,3 +61,31 @@
       chdir: "{{ remote_wordpress_dir }}/"
   when: wordpress_is_installed|failed
   remote_user: "{{ remote_deploy_user }}"
+
+- name: Install WordPress theme
+  command: "wp theme install {{ wordpress_theme }} --activate"
+  args:
+    chdir: "{{ remote_wordpress_dir }}"
+  when: wp_advanced is defined
+
+- name: Install WordPress plugins
+  command: "wp plugin install {{ item }} --activate"
+  args:
+    chdir: "{{ remote_wordpress_dir }}"
+  with_items: wordpress_plugins
+  when: wp_advanced is defined
+
+- name: Download WordPress dummy data
+  get_url:
+    url: https://raw.githubusercontent.com/manovotny/wptest/master/wptest.xml
+    dest: "{{ remote_wordpress_dir }}/wptest.xml"
+  when: wp_advanced is defined
+
+- name: Import WordPress dummy data
+  command: "wp import {{ item }} --authors=create"
+  args:
+    chdir: "{{ remote_wordpress_dir }}"
+  with_items:
+  - wp-content/plugins/woocommerce/dummy-data/dummy-data.xml
+  - wptest.xml
+  when: wp_dummy_data is defined

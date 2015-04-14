@@ -13,7 +13,7 @@
     - wordpress-install
     - php-fpm
     - nginx
-    - apache2
+    - apache
     - hhvm
     - redis
     - monit

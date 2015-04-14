@@ -16,6 +16,16 @@ wordpress_admin_user: admin
 wordpress_admin_user_pass: adminpass
 wordpress_admin_email: email@example.com
 
+wordpress_plugins:
+- wordpress-importer
+- woocommerce
+- disqus-comment-system
+- jetpack
+- wordpress-seo
+- custom-sidebars
+
+wordpress_theme: storefront
+
 # role: mariadb
 # You can put the password into roles/mariadb/vars/main.yml and add the file to .gitignore for security reasons
 mysql_root_password: mariadbpass

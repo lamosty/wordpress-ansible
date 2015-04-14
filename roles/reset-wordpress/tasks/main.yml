@@ -1,0 +1,17 @@
+---
+
+- name: Drop WordPress database
+  mysql_db: name="{{ wordpress_db_name }}"
+            state=absent
+            login_user=root
+            login_password="{{ mysql_root_password }}"
+
+- name: Drop WordPress DB user
+  mysql_user: name="{{ wordpress_db_user }}"
+              state=absent
+              login_user="root"
+              login_password="{{ mysql_root_password }}"
+
+- name: Remove WordPress directory
+  file: path="{{ remote_wordpress_dir }}"
+        state=absent

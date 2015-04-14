@@ -25,6 +25,7 @@
   with_items:
   - htop
   - screen
+  - unzip
 
 - name: Install system packages
   apt: name="{{ item }}" state=present
@@ -46,3 +47,11 @@
     name: "{{ remote_deploy_user }}"
     home: "{{ remote_deploy_home }}"
     group: "{{ remote_deploy_group }}"
+
+- name: Add ssh keys to root and deploy accounts
+  authorized_key:
+    user: "{{ item }}"
+    key: "{{ lookup('file', '/Users/lamosty/.ssh/id_rsa.pub') }}"
+  with_items:
+  - root
+  - "{{ remote_deploy_user }}"
