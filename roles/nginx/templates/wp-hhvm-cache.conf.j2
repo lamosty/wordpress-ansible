@@ -1,0 +1,76 @@
+# {{ ansible_managed }}
+
+# FastCGI caching
+
+# Set location, zone keys, storage (in MB) and minutes to keep the cached assets if not accessed
+fastcgi_cache_path /tmp/nginx-cache levels=1:2 keys_zone=WordPress:100m inactive=60m;
+
+# Caching schema
+fastcgi_cache_key "$scheme$request_method$host$server_port$request_uri";
+
+# Ignore requests to purge the cache
+fastcgi_ignore_headers Cache-Control Expires Set-Cookie;
+
+# Use stale (old) cached assets on error, timeout, invalid headers or when updating the cache
+fastcgi_cache_use_stale error timeout invalid_header updating;
+
+server {
+    root {{ remote_wordpress_dir }};
+
+    index index.php index.html;
+
+    location / {
+        try_files $uri $uri/ /index.php;
+    }
+
+
+    # Don't skip cache by default
+    set $skip_cache 0;
+
+    # Skip cache if query string in URI (e.g. ?s=test)
+    #if ($query_string != "") {
+    #    set $skip_cache 1;
+    #}
+
+    # Don't cache URIs containing the following segments
+    if ($request_uri ~* "/wp-admin/|/xmlrpc.php|wp-.*.php|/feed/|index.php|sitemap(_index)?.xml") {
+        set $skip_cache 1;
+    }
+
+    # Don't use the cache for logged in users or recent commenters
+    if ($http_cookie ~* "comment_author|wordpress_[a-f0-9]+|wp-postpass|wordpress_no_cache|wordpress_logged_in") {
+        set $skip_cache 1;
+    }
+
+    location ~ \.php$ {
+        try_files $uri =404;
+
+        # FastCGI Caching
+
+        # Which zone to apply
+        fastcgi_cache WordPress;
+
+        # Cache for 60 minutes
+        fastcgi_cache_valid 60m;
+
+        # Cache only GET and HEAD methods
+        fastcgi_cache_methods GET HEAD;
+
+        # Skip cache in certain conditions
+        fastcgi_cache_bypass $skip_cache;
+        fastcgi_no_cache $skip_cache;
+
+        # Add header informing about the cache status (MISS|HIT|BYPASS)
+        add_header X-Fastcgi-Cache $upstream_cache_status;
+
+        include fastcgi_params;
+
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT $realpath_root;
+
+        fastcgi_pass unix:/var/run/hhvm/hhvm.sock;
+
+        client_max_body_size 0;
+    }
+
+}

@@ -1,0 +1,14 @@
+---
+- name: WordPress on Nginx (with FastCGI caching), HHVM, MariaDB
+
+  hosts: webservers
+  remote_user: root
+  vars:
+    wp_hhvm_cache: true
+    hhvm_start: true
+
+  roles:
+    - reset-all-configs
+    - hhvm
+    - nginx
+
