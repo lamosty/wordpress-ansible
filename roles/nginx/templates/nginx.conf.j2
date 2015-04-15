@@ -6,93 +6,165 @@
 # Run as a less privileged user for security reasons.
 user www-data;
 
+pid        /run/nginx.pid;
+
 # How many worker threads to run;
 # "auto" sets it to the number of CPU cores available in the system, and
 # offers the best performance. Don't set it higher than the number of CPU
 # cores if changing this parameter.
-
+#
 # The maximum number of connections for Nginx is calculated by:
 # max_clients = worker_processes * worker_connections
-worker_processes 2;
+worker_processes auto;
+
 
 # Maximum open file descriptors per process;
 # should be > worker_connections.
-worker_rlimit_nofile 8192;
+worker_rlimit_nofile 100000;
 
 events {
-  # When you need > 8000 * cpu_cores connections, you start optimizing your OS,
-  # and this is probably the point at which you hire people who are smarter than
-  # you, as this is *a lot* of requests.
-  worker_connections 8000;
+    # When you need > 8000 * cpu_cores connections, you start optimizing your OS,
+    # and this is probably the point at which you hire people who are smarter than
+    # you, as this is *a lot* of requests.
+    worker_connections 10240;
+
+    # Allow worker processes to accept all new connections at a time.
+    multi_accept on;
+
+    # Efficient connection processing method, used on Linux 2.6+
+    use epoll;
 }
 
-# Default error log file
-# (this is only used when you don't override error_log on a server{} level)
-error_log  {{ logs_root }}/error.log warn;
-pid        /run/nginx.pid;
+
 
 http {
 
-  # Hide nginx version information.
-  server_tokens off;
+    # Hide nginx version information.
+    server_tokens off;
 
-  # Define the MIME types for files.
-  include       mime.types;
-  default_type  application/octet-stream;
+    # Define the MIME types for files.
+    include       mime.types;
+    default_type  application/octet-stream;
 
-  # Update charset_types due to updated mime.types
-  charset_types text/xml text/plain text/vnd.wap.wml application/x-javascript application/rss+xml text/css application/javascript application/json;
+    # Speed up file transfers by using sendfile() to copy directly
+    # between descriptors rather than using read()/write().
+    sendfile        on;
 
-  # Format to use in log files
-  log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
-                    '$status $body_bytes_sent "$http_referer" '
-                    '"$http_user_agent" "$http_x_forwarded_for"';
+    # Tell Nginx not to send out partial frames; this increases throughput
+    # since TCP frames are filled up before being sent out. (adds TCP_CORK)
+    tcp_nopush      on;
 
-  # Default log file
-  # (this is only used when you don't override access_log on a server{} level)
-  access_log {{ logs_root }}/access.log main;
+    tcp_nodelay on;
 
-  # How long to allow each connection to stay idle; longer values are better
-  # for each individual client, particularly for SSL, but means that worker
-  # connections are tied up longer. (Default: 65)
-  keepalive_timeout 20;
-
-  # Speed up file transfers by using sendfile() to copy directly
-  # between descriptors rather than using read()/write().
-  sendfile        on;
-
-  # Tell Nginx not to send out partial frames; this increases throughput
-  # since TCP frames are filled up before being sent out. (adds TCP_CORK)
-  tcp_nopush      on;
+    # How long to allow each connection to stay idle; longer values are better
+    # for each individual client, particularly for SSL, but means that worker
+    # connections are tied up longer. (Default: 65)
+    keepalive_timeout 30 30;
 
 
-  # Compression
+    # Sets the maximum number of requests that can be served through one keep-alive connection.
+    # After the maximum number of requests are made, the connection is closed.
+    keepalive_requests 100000;
 
-  # Enable Gzip compressed.
-  gzip on;
+    # Enables or disables resetting timed out connections.
+    reset_timedout_connection on;
 
-  # Compression level (1-9).
-  # 5 is a perfect compromise between size and cpu usage, offering about
-  # 75% reduction for most ascii files (almost identical to level 9).
-  gzip_comp_level    5;
+    # Enables or disables the use of the primary server name, specified by the server_name directive,
+    # in redirects issued by nginx.
+    server_name_in_redirect off;
 
-  # Don't compress anything that's already small and unlikely to shrink much
-  # if at all (the default is 20 bytes, which is bad as that usually leads to
-  # larger files after gzipping).
-  gzip_min_length    256;
+    # Sets the maximum allowed size of the client request body, specified in the “Content-Length” request header field.
+    # If the size in a request exceeds the configured value, the 413 (Request Entity Too Large)
+    # error is returned to the client.
+    client_max_body_size 512m;
 
-  # Compress data even for clients that are connecting to us via proxies,
-  # identified by the "Via" header (required for CloudFront).
-  gzip_proxied       any;
+    # Sets buffer size for reading client request body. In case the request body is larger than the buffer,
+    # the whole body or only its part is written to a temporary file.
+    client_body_buffer_size 10k;
 
-  # Tell proxies to cache both the gzipped and regular version of a resource
-  # whenever the client's Accept-Encoding capabilities header varies;
-  # Avoids the issue where a non-gzip capable client (which is extremely rare
-  # today) would display gibberish if their proxy gave them the gzipped version.
-  gzip_vary          on;
+    # Defines a timeout for reading client request body. The timeout is set only for a period between two successive
+    # read operations, not for the transmission of the whole request body. If a client does not transmit anything
+    # within this time, the 408 (Request Time-out) error is returned to the client.
+    client_body_timeout 30;
 
-  # Compress all output labeled with one of the following MIME-types.
-  gzip_types
+    # Defines a timeout for reading client request header. If a client does not transmit the entire header within
+    # this time, the 408 (Request Time-out) error is returned to the client.
+    client_header_timeout 30;
+
+    # Sets a timeout for transmitting a response to the client. The timeout is set only between two successive write
+    # operations, not for the transmission of the whole response. If the client does not receive anything within
+    # this time, the connection is closed.
+    send_timeout 30;
+
+    # Sets buffer size for reading client request header. For most requests, a buffer of 1K bytes is enough.
+    client_header_buffer_size 256k;
+
+    # Sets the maximum number and size of buffers used for reading large client request header.
+    large_client_header_buffers 4 256k;
+
+    # Configures a cache that can store:
+
+    # - open file descriptors, their sizes and modification times;
+    # - information on existence of directories;
+    # - file lookup errors, such as “file not found”, “no read permission”, and so on.
+    open_file_cache max=200000 inactive=20s;
+    open_file_cache_valid 30s;
+    open_file_cache_min_uses 2;
+    open_file_cache_errors on;
+
+    # Update charset_types due to updated mime.types
+    charset_types text/xml text/plain text/vnd.wap.wml application/x-javascript application/rss+xml text/css application/javascript application/json;
+
+    ##
+    # Logging Settings
+    ##
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+              '$status $body_bytes_sent "$http_referer" '
+              '"$http_user_agent" "$http_x_forwarded_for"';
+
+    # Default log file
+    # (this is only used when you don't override access_log on a server{} level)
+
+    # access_log {{ logs_root }}/access.log main buffer=16k;
+    access_log off;
+
+    # Default error log file
+    # (this is only used when you don't override error_log on a server{} level)
+    error_log  {{ logs_root }}/error.log warn;
+
+    ##
+    # Gzip Settings
+    ##
+
+    # Enable Gzip compression.
+    gzip on;
+
+    # Compression level (1-9).
+    # 5 is a perfect compromise between size and cpu usage, offering about
+    # 75% reduction for most ascii files (almost identical to level 9).
+    gzip_comp_level    5;
+
+    # Don't compress anything that's already small and unlikely to shrink much
+    # if at all (the default is 20 bytes, which is bad as that usually leads to
+    # larger files after gzipping).
+    gzip_min_length    256;
+
+    # Compress data even for clients that are connecting to us via proxies,
+    # identified by the "Via" header (required for CloudFront).
+    gzip_proxied       any;
+
+    # Tell proxies to cache both the gzipped and regular version of a resource
+    # whenever the client's Accept-Encoding capabilities header varies;
+    # Avoids the issue where a non-gzip capable client (which is extremely rare
+    # today) would display gibberish if their proxy gave them the gzipped version.
+    gzip_vary          on;
+
+    # Sets the number and size of buffers used to compress a response.
+    gzip_buffers 128 8k;
+
+    # Compress all output labeled with one of the following MIME-types.
+    gzip_types
     application/atom+xml
     application/javascript
     application/json
@@ -108,14 +180,17 @@ http {
     text/css
     text/plain
     text/x-component;
-  # text/html is always compressed by HttpGzipModule
+    # text/html is always compressed by HttpGzipModule
+
+    # Disable gzip compression for IE 1-6
+    gzip_disable "MSIE [1-6]\.";
 
 
-  # This should be turned on if you are going to have pre-compressed copies (.gz) of
-  # static files available. If not it should be left off as it will cause extra I/O
-  # for the check. It is best if you enable this in a location{} block for
-  # a specific directory, or on an individual server{} level.
-  # gzip_static on;
+    # This should be turned on if you are going to have pre-compressed copies (.gz) of
+    # static files available. If not it should be left off as it will cause extra I/O
+    # for the check. It is best if you enable this in a location{} block for
+    # a specific directory, or on an individual server{} level.
+    # gzip_static on;
 
-  include sites-enabled/*;
+    include sites-enabled/*;
 }
