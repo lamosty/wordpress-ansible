@@ -41,12 +41,12 @@
   when: wp_hhvm is defined
 
 - name: Create HHVM WordPress site configuration with FastCGI caching
-  template: src=wp-hhvm-cache.conf.j2
-            dest=/etc/nginx/sites-available/wp-hhvm-cache.conf
+  template: src=wp-hhvm-fastcgi-cache.conf.j2
+            dest=/etc/nginx/sites-available/wp-hhvm-fastcgi-cache.conf
 
 - name: Enable HHVM WordPress site configuration with FastCGI caching
-  file: src="/etc/nginx/sites-available/wp-hhvm-cache.conf"
-        dest="/etc/nginx/sites-enabled/wp-hhvm-cache.conf"
+  file: src="/etc/nginx/sites-available/wp-hhvm-fastcgi-cache.conf"
+        dest="/etc/nginx/sites-enabled/wp-hhvm-fastcgi-cache.conf"
         owner=root
         group=root
         state=link
