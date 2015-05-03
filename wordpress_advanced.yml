@@ -1,15 +1,13 @@
 ---
-- name: WordPress with WooCommerce, Jetpack and dummy data
+- name: WordPress with WooCommerce, Jetpack, custom theme and dummy data
 
   hosts: webservers
   remote_user: deploy
   vars:
     wp_advanced: true
     wp_dummy_data: true
-    wp_redis: true
 
   roles:
-#    - reset-wordpress
-#    - wordpress-install
-    - web-caching
+    - reset-wordpress
+    - wordpress-install
 

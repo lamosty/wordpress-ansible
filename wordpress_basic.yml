@@ -1,0 +1,10 @@
+---
+- name: WordPress with default theme and no dummy data.
+
+  hosts: webservers
+  remote_user: deploy
+
+  roles:
+    - reset-wordpress
+    - wordpress-install
+
