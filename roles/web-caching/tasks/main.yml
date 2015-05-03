@@ -3,6 +3,7 @@
 - name: Start Redis
   service: name=redis-server state=started
   when: wp_redis is defined
+  remote_user: root
 
 - name: Install WP Redis WordPress plugin
   command: "wp plugin install wp-redis"
