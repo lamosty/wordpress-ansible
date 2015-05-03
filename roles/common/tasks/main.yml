@@ -51,7 +51,7 @@
 - name: Add ssh keys to root and deploy accounts
   authorized_key:
     user: "{{ item }}"
-    key: "{{ lookup('file', '/Users/lamosty/.ssh/id_rsa.pub') }}"
+    key: "{{ lookup('file', ssh_key_pub_path) }}"
   with_items:
   - root
   - "{{ remote_deploy_user }}"

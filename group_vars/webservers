@@ -2,6 +2,7 @@
 remote_deploy_user: deploy
 remote_deploy_group: deploy
 remote_deploy_home: /home/deploy
+ssh_key_pub_path: /Users/lamosty/.ssh/id_rsa.pub
 
 # role: wordpress-install
 remote_www_dir: "{{ remote_deploy_home}}/projects"
