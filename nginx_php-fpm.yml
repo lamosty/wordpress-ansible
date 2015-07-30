@@ -1,15 +1,14 @@
 ---
 - name: WordPress on Nginx (no FastCGI caching), PHP-FPM, MariaDB
 
-  hosts: wphv
+  hosts: webservers
   remote_user: root
   vars:
     wp_php_fpm: true
     fpm_start: true
 
   roles:
-    - common
+    - reset-all-configs
     - php-fpm
     - nginx
-    - mariadb
 
