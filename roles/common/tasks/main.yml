@@ -29,6 +29,7 @@
 - name: Install useful software
   apt: name="{{ item }}" state=present
   with_items:
+  - sudo
   - htop
   - screen
   - unzip
