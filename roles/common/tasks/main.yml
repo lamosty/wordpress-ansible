@@ -8,12 +8,12 @@
 - name: Update Apt
   apt: update_cache=yes
 
-#- name: Generate locale
-#  locale_gen: name="en_US.UTF-8" state=present
+- name: Generate locale
+  locale_gen: name="en_US.UTF-8" state=present
 
-#- name: Update locale
-#  command: /usr/sbin/update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
-#  notify: reconfigure dpkg
+- name: Update locale
+  command: /usr/sbin/update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+  notify: reconfigure dpkg
 
 - name: Check if anything needs autoremoving
   shell: apt-get -y --dry-run autoremove | grep -q "0 to remove"
