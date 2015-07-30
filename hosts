@@ -1,6 +1,5 @@
 # Put your VPS server host here
 
-vpsfree.pgn
 
-[webservers]
-vpsfree.pgn
+[wphv]
+hv1	ansible_ssh_host=195.114.211.76

@@ -1,7 +1,7 @@
 ---
 - name: WordPress on Nginx (no FastCGI caching), PHP-FPM, MariaDB
 
-  hosts: webservers
+  hosts: wphv
   remote_user: root
   vars:
     wp_php_fpm: true

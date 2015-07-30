@@ -1,6 +1,14 @@
 ---
 - name: Add Nginx PPA
   apt_repository: repo="ppa:rtcamp/nginx" update_cache=yes
+  when: ansible_distribution == 'Ubuntu'
+
+- name: Add Nginx Debian repo
+  apt_repository: repo="{{ item }}" state=present
+  with_items:
+    - "deb http://ftp.debian.org/debian/ testing main contrib non-free"
+    - "deb-src http://ftp.debian.org/debian/ testing main contrib non-free"
+  when: ansible_distribution == 'Debian'
 
 - name: Install Nginx
   apt: name=nginx state=present force=yes

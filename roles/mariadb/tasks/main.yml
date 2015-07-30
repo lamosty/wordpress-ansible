@@ -1,7 +1,7 @@
 ---
 - name: Add MariaDB MySQL apt-key
-  apt_key: url="http://keyserver.ubuntu.com/pks/lookup?op=get&fingerprint=on&search={{ keyserver_fingerprint }}"
-           state=present
+  apt_key: url="http://keyserver.ubuntu.com/pks/lookup?op=get&fingerprint=on&search={{ keyserver_fingerprint }}" state=present
+  when: ansible_distribution == 'Ubuntu' 
 
 - name: Add MariaDB MySQL deb and deb-src
   apt_repository: repo="{{ item }}" state=present
